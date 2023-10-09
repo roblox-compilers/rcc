@@ -3,8 +3,11 @@ import os
 import sys
 import compile
 import template
-import inquirer
-from inquirer import List
+try:
+    import inquirer
+    from inquirer import List
+except ImportError:
+    log.error("inquirer not installed, run 'pip install inquirer'")
 
 def display_option_menu(options, msg):
     questions = [

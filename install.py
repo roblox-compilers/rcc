@@ -55,6 +55,12 @@ exec = {
         "darwin": "qts",
         "win32": "qts.exe",
         "special": None
+    },
+    "rcc": {
+        "repo": "roblox-compilers/rcc",
+        "darwin": "rcc",
+        "win32": "rcc.exe",
+        "special": None
     }
 }
 
