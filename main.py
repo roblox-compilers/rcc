@@ -22,8 +22,7 @@ try:
     if len(args) == 0:
         # compile src to out
         compile.compile("src", "out")
-        
-    if args[0] == "install":
+    elif args[0] == "install":
         install.install(args[1] or log.error("package name not provided"))
     elif args[0] == "uninstall":
         install.delete(args[1] or log.error("package name not provided"))
@@ -76,5 +75,5 @@ try:
             
         compile.compile(inputf, outputf)       
 except Exception as e:
-    print(e)
+    print()
     sys.exit(1)
