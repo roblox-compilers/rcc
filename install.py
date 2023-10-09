@@ -86,6 +86,11 @@ def install(pkg):
             exec[relative[pkg]]["specialin"]()
         else:
             path = f"https://github.com/{exec[relative[pkg]]['repo']}/releases/latest/download/{exec[relative[pkg]][sys.platform] or log.error('platform not supported')}"
+            # check if curl is installed
+            o = os.system("curl --version > /dev/null 2>&1")
+            if o != 0:
+                log.error("curl not installed")
+                
             log.info(f"downloading {pkg}...")
             os.system(f"curl -L {path} -o {exec[relative[pkg]][sys.platform]} > /dev/null 2>&1")
             log.info(f"installing {pkg}...")

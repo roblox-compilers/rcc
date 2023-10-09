@@ -40,8 +40,6 @@ try:
         else:
             chosen = display_option_menu(options, "Select a compiler")
         template.load(chosen)
-            
-            
     else:
         # argparse
         # read args
