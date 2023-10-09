@@ -1,7 +1,7 @@
 """
 Handles all the packages
 """
-import os, sys, getch
+import os, sys
 import log
 
 def qts():
