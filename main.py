@@ -33,7 +33,7 @@ try:
         install.delete(args[1] or log.error("package name not provided"))
         install.install(args[1])
     elif args[0] == "init":
-        options = ["roblox-py", "roblox-c", "roblox-cs", "roblox-kt"]
+        options = ["roblox-py", "roblox-c (C)", "roblox-c (C++)", "roblox-cs", "roblox-kt"]
         chosen = None
         if len(args) > 1:
             chosen = args[1]
