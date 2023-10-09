@@ -92,7 +92,22 @@ def install(pkg):
 def bin(file):
     # Move the file to /usr/bin in macOS and Linux, and to C:\win32dows\System32 in windows
     if sys.platform == "win32":
-        os.system(f"move {file} C:\\windows\\System32")
+        os.system(f"runas /user:Administrator move {file} C:\\windows\\System32")
     else:
         os.system(f"chmod +x {file}")
         os.system(f"mv {file} /usr/local/bin")
+        
+def delete(file):
+    log.info(f"uninstalling {file}...")
+    # check if the file exists
+    if sys.platform == "win32":
+        if not os.path.isfile(f"C:\\windows\\System32\\{file}"):
+            log.error(f"package '{file}' not installed")
+    else:
+        if not os.path.isfile(f"/usr/local/bin/{file}"):
+            log.error(f"package '{file}' not installed")
+            
+    if sys.platform == "win32":
+        os.system(f"runas /user:Administrator del C:\\windows\\System32\\{file}")
+    else:
+        os.system(f"rm /usr/local/bin/{file}")
