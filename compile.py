@@ -1,5 +1,6 @@
 import os
 import log
+import runtime
 
 def check_exec(name):
     try:
@@ -25,19 +26,24 @@ def fileformat(file):
 class Compilers:
     def compile_py(file, outfile):
         check_exec("rbxpy")
-        os.system("rbxpy " + file + " -f -o " + refileformat(outfile, fileformat(file), "lua"))
+        os.system("rbxpy " + file + " -r -o " + refileformat(outfile, fileformat(file), "lua"))
+        return "py"
     def compile_c(file, outfile):
         check_exec("rbxc")
         os.system("rbxc " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
+        return "c"
     def compile_cs(file, outfile):
         check_exec("rbxcs")
         os.system("rbxcs " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
+        return "cs"
     def compile_ts(file, outfile):
         check_exec("qts")
         os.system("qts " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
+        return "ts"
     def compile_kt(file, outfile):
         check_exec("rbxkt")
         os.system("rbxkt " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
+        return "kt"
     
 def compile(indir, outdir):
     # check if indir exists
@@ -47,6 +53,7 @@ def compile(indir, outdir):
     if not os.path.exists(outdir):
         os.mkdir(outdir)
     # walk through files in indir
+    languages = []
     for root, dirs, files in os.walk(indir):
         for file in files:
             ext = file.split(".")[-1]
@@ -63,4 +70,11 @@ def compile(indir, outdir):
             if not os.path.exists("/".join(outfile.split("/")[:-1])):
                 os.makedirs("/".join(outfile.split("/")[:-1]))
             # compile
-            compiler(file, outfile)
+            languages.append(compiler(file, outfile))
+    # remove duplicates from languages
+    languages = list(set(languages))
+    
+    # add runtime libraries
+    if not os.path.exists(outdir + "/../include"):
+        os.mkdir(outdir + "/../include")
+    runtime.RuntimeEngine.load(languages, outdir + "/../include")

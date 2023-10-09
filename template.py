@@ -33,8 +33,10 @@ KT = r"""{"template/default.project.json": "{\n  \"name\": \"rcc-template\",\n  
 def load(format):
     if format == "roblox-cs":
         json_to_dir(CS)
-    elif format == "roblox-c":
+    elif format == "roblox-c (C)":
         json_to_dir(C)
+    elif format == "roblox-c (C++)":
+        json_to_dir(CPP)
     elif format == "roblox-py":
         json_to_dir(PYTHON)
     elif format == "roblox-kt":
