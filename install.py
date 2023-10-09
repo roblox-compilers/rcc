@@ -3,7 +3,10 @@ Handles all the packages
 """
 import os, sys
 import log
-
+try:
+    import requests
+except:
+    log.error("requests not installed, please install it using 'pip install requests'")
 def qts():
     if input("\033[1;33mreccomendation \033[0m\033[90mCORE rcc:\033[0m would you like to install qts alongside rbxts? (y/n)  ") == "y":
         install("qts")
@@ -86,13 +89,12 @@ def install(pkg):
             exec[relative[pkg]]["specialin"]()
         else:
             path = f"https://github.com/{exec[relative[pkg]]['repo']}/releases/latest/download/{exec[relative[pkg]][sys.platform] or log.error('platform not supported')}"
-            # check if curl is installed
-            o = os.system("curl --version > /dev/null 2>&1")
-            if o != 0:
-                log.error("curl not installed")
                 
             log.info(f"downloading {pkg}...")
-            os.system(f"curl -L {path} -o {exec[relative[pkg]][sys.platform]} > /dev/null 2>&1")
+            r = requests.get(path)
+            with open(exec[relative[pkg]][sys.platform], "wb") as f:
+                f.write(r.content)
+                
             log.info(f"installing {pkg}...")
             bin(exec[relative[pkg]][sys.platform])
             
