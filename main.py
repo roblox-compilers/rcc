@@ -10,16 +10,16 @@ except ImportError:
     log.error("inquirer not installed, run 'pip install inquirer'")
 
 def help():
-    print("usage: \033[31;1mrcc\0330m [command] [options]")
+    print("usage: \033[31;1mrcc\033[0m [command] [options]")
     print("\033[1mCommands:\033[0m")
-    print("  \033[31;1mhelp\033[0m\t\topen this help menu")
-    print("  \033[31;1minit\033[0m\t\tinitialize a project")
-    print("  \033[31;1minstall\033[0m\tinstall a compiler")
-    print("  \033[31;1muninstall\033[0m\tuninstall a compiler")
-    print("  \033[31;1mupdate\033[0m\tupdate a compiler")
+    print("  \033[1mhelp\033[0m\t\topen this help menu")
+    print("  \033[1minit\033[0m\t\tinitialize a project")
+    print("  \033[1minstall\033[0m\tinstall a compiler")
+    print("  \033[1muninstall\033[0m\tuninstall a compiler")
+    print("  \033[1mupdate\033[0m\tupdate a compiler")
     print("\033[1mOptions:\033[0m")
-    print("  \033[31;1m-o\033[0m\t\toutput directory (default: out)")
-    print("  \033[31;1m<none>\033[0m\tinput directory (default: src)")
+    print("  \033[1m-o\033[0m\t\toutput directory (default: out)")
+    print("  \033[1m<none>\033[0m\tinput directory (default: src)")
 def display_option_menu(options, msg):
     questions = [
         List('option',
