@@ -1,7 +1,11 @@
 import os
 import log
 import runtime
-
+try:
+    import shutil
+except:
+    log.error("shutil not installed, please install it using 'pip install shutil'")
+    
 def check_exec(name):
     try:
         os.system(name + " -v > /dev/null")
@@ -52,6 +56,9 @@ def compile(indir, outdir):
     # if outdir does not exist, create it
     if not os.path.exists(outdir):
         os.mkdir(outdir)
+    else:
+        shutil.rmtree(outdir)
+        
     # walk through files in indir
     languages = []
     for root, dirs, files in os.walk(indir):
