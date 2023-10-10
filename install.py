@@ -18,6 +18,16 @@ def installrbxts():
     os.system("npm install -g typescript")
     os.system("npm install -g @rbxts/rbxts-cli")
     
+def installincludes():
+    log.info("installing roblox-c include...")
+    contents = requests.get("https://raw.githubusercontent.com/roblox-compilers/roblox-c/main/src/rbx.h").text
+    if sys.platform == "win32":
+        with open(input("Please enter the path to the include folder: ") + "\\rbx.h", "w") as f:
+            f.write(contents)   
+    else:
+        with open("/usr/local/include/rbx.h", "w") as f:
+            f.write(contents)
+            
 def notact():
     log.error("not available")
     
