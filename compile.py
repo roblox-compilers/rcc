@@ -22,6 +22,7 @@ summerize = {
     "ts": "compile_ts",
     "tsx": "compile_ts",
     "kt": "compile_kt",
+    "wasm": "compile_wasm",
 }
 def refileformat(file, old, new):
     return ".".join(file.split(".")[:-1]) + "." + new
@@ -48,7 +49,10 @@ class Compilers:
         check_exec("rbxkt")
         os.system("rbxkt " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
         return "kt"
-    
+    def compile_wasm(file, outfile):
+        check_exec("rbxwasm")
+        os.system("rbxwasm " + file + " > " + refileformat(outfile, fileformat(file), "lua"))
+        return "wasm"
 def compile(indir, outdir):
     # check if indir exists
     if not os.path.exists(indir):

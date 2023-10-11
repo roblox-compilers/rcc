@@ -19,7 +19,7 @@ def installrbxts():
     os.system("npm install -g @rbxts/rbxts-cli")
     
 def installincludes():
-    log.info("installing roblox-c include...")
+    log.info("installing roblox-c includes...")
     contents = requests.get("https://raw.githubusercontent.com/roblox-compilers/roblox-c/main/src/rbx.h").text
     if sys.platform == "win32":
         with open(input("Please enter the path to the include folder: ") + "\\rbx.h", "w") as f:
@@ -69,26 +69,41 @@ exec = {
         "win32": "qts.exe",
         "special": None
     },
+    "roblox-wasm": {
+        "repo": "roblox-compilers/roblox-wasm",
+        "darwin": "rbxwasm",
+        "win32": "rbxwasm.exe",
+        "special": None
+    },
     "rcc": {
         "repo": "roblox-compilers/rcc",
         "darwin": "rcc",
         "win32": "rcc.exe",
         "special": None
-    }
+    },
 }
 
 relative = {
+    # RBX
     "rbxpy": "roblox-py",
     "rbxc": "roblox-c",
     "rbxcs": "roblox-cs",
     "rbxts": "roblox-ts",
     "rbxkt": "roblox-kt",
+    "rbxwasm": "roblox-wasm",
+    
+    # Other
     "qts": "qts",
+    "wasm": "roblox-wasm",
+    "rcc": "rcc",
+    
+    # roblox-
     "roblox-py": "roblox-py",
     "roblox-c": "roblox-c",
     "roblox-cs": "roblox-cs",
     "roblox-ts": "roblox-ts",
     "roblox-kt": "roblox-kt",
+    "roblox-wasm": "roblox-wasm",
 }
 
 def install(pkg):
@@ -115,7 +130,7 @@ def install(pkg):
 def bin(file):
     # Move the file to /usr/bin in macOS and Linux, and to C:\win32dows\System32 in windows
     if sys.platform == "win32":
-        os.system(f"runas /user:Administrator move {file} C:\\windows\\System32")
+        os.system(f"move {file} C:\\windows\\System32")
     else:
         os.system(f"chmod +x {file}")
         os.system(f"mv {file} /usr/local/bin")
@@ -131,6 +146,6 @@ def delete(file):
             log.error(f"package '{file}' not installed")
             
     if sys.platform == "win32":
-        os.system(f"runas /user:Administrator del C:\\windows\\System32\\{file}")
+        os.system(f"del C:\\windows\\System32\\{file}")
     else:
         os.system(f"rm /usr/local/bin/{file}")
