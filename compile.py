@@ -24,6 +24,7 @@ summerize = {
     "kt": "compile_kt",
     "wasm": "compile_wasm",
 }
+
 def refileformat(file, old, new):
     return ".".join(file.split(".")[:-1]) + "." + new
 def fileformat(file):
