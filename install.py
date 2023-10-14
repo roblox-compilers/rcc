@@ -22,7 +22,7 @@ def installincludes():
     log.info("installing roblox-c includes...")
     contents = requests.get("https://raw.githubusercontent.com/roblox-compilers/roblox-c/main/src/rbx.h").text
     if sys.platform == "win32":
-        with open(input("Please enter the path to the include folder: ") + "\\rbx.h", "w") as f:
+        with open(input("Please enter the path to your C and C++ include folder: ") + "\\rbx.h", "w") as f:
             f.write(contents)   
     else:
         with open("/usr/local/include/rbx.h", "w") as f:
