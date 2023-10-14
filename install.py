@@ -8,7 +8,7 @@ try:
 except:
     log.error("requests not installed, please install it using 'pip install requests'")
 def qts():
-    if input("\033[1;33mreccomendation \033[0m\033[90mCORE rcc:\033[0m would you like to install qts alongside rbxts? (y/n)  ") == "y":
+    if input("\033[1;33mreccomendation \033[0m\033[90mCORE rcc:\033[0m would you like to install qts alongside rbxts? (y/n)  ").lower() == "y":
         install("qts")
     else:
         return True
