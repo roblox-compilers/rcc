@@ -129,11 +129,18 @@ def install(pkg):
             
 def bin(file):
     # Move the file to /usr/bin in macOS and Linux, and to C:\win32dows\System32 in windows
+    
     if sys.platform == "win32":
-        os.system(f"move {file} C:\\windows\\System32")
+        path = f"C:\\windows\\System32\\{file}"
     else:
         os.system(f"chmod +x {file}")
-        os.system(f"mv {file} /usr/local/bin")
+        path = f"/usr/local/bin/{file}"
+    
+    # move {file} to {path}
+    try:
+        os.rename(file, path)
+    except Exception as e:
+        log.error(f"installation failed: {e}")
         
 def delete(file):
     log.info(f"uninstalling {file}...")
@@ -146,6 +153,7 @@ def delete(file):
             log.error(f"package '{file}' not installed")
             
     if sys.platform == "win32":
-        os.system(f"del C:\\windows\\System32\\{file}")
+        path = f"C:\\windows\\System32\\{file}"
     else:
-        os.system(f"rm /usr/local/bin/{file}")
+        path = f"/usr/local/bin/{file}"
+    os.remove(path)
