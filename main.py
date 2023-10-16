@@ -4,6 +4,8 @@ import sys
 import compile
 import template
 import traceback
+import wally
+import json
 try:
     import inquirer
     from inquirer import List
@@ -40,10 +42,11 @@ def display_option_menu(options, msg):
     selected_option = answers['option']
     return selected_option
 
+DEBUG = False
+
 def main():#try:
     args = sys.argv[1:]
     if "-d" in args:
-        global DEBUG
         DEBUG = True
         args.remove("-d")
     if len(args) == 0:
@@ -61,7 +64,25 @@ def main():#try:
         os.system("rojo build -o out.rbxmx")
     elif args[0] == "include":
         try: 
-            compile.include(args[1])
+            if args[1].startswith("@rbxts/"):
+                with open("package.json", "r") as f:
+                    package = json.load(f)
+                if args[1] in package["dependencies"]:
+                    log.error("package already installed")
+                else: 
+                    package["dependencies"][args[1]] = "*"
+                    with open("package.json", "w") as f:
+                        json.dump(package, f, indent=4)
+                        
+                pass
+            else:
+                author = args[1].split("/")[0].replace("@", "")
+                name = args[1].split("/")[1]
+                try:
+                    wally.get(author, name)
+                except Exception as e:
+                    log.error("include failed, " + str(e))
+            
         except:
             sys.exit(1)
     elif args[0] == "update":

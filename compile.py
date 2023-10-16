@@ -2,6 +2,7 @@ import os
 import log
 import runtime
 import texteng
+import json
 
 try:
     import shutil
@@ -71,7 +72,14 @@ class Compilers:
         return "cs"
     def compile_ts(file, outfile):
         check_exec("qts")
-        os.system("qts " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
+        pkgs = []
+        if os.path.exists("package.json"):
+            with open("package.json", "r") as f:
+                package = json.load(f)
+            if "dependencies" in package:
+                for i in package["dependencies"]:
+                    pkgs.append(i)
+        os.system("qts " + file + " -o " + refileformat(outfile, fileformat(file), "lua") + " -I " + " -I ".join(pkgs))
         return "ts"
     def compile_kt(file, outfile):
         check_exec("rbxkt")

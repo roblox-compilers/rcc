@@ -4,7 +4,7 @@
 - Fixed small bugs
 # RCC 1.1.1
 - Fixed windows support for subdirectories (TODO)
-- `rcc include` (TODO)
+- `rcc include` (rbxts packages are handled by qts -I)
 - C runtime support
 - Teal, YueScript, and MoonScript core support
 - TextFile, XML, & JSON support
