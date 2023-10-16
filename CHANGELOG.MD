@@ -11,4 +11,5 @@
 - Report missing arguments
 - RASM support
 - Support Lua files in RCC projects
+- RCC library 
 - `rcc build`
