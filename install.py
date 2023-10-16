@@ -7,13 +7,27 @@ try:
     import requests
 except:
     log.error("requests not installed, please install it using 'pip install requests'")
+import subprocess, compile, shutil
+
 def qts():
     if input("\033[1;33mreccomendation \033[0m\033[90mCORE rcc:\033[0m would you like to install qts alongside rbxts? (y/n)  ").lower() == "y":
         install("qts")
     else:
         return True
+def silent(code):
+    subprocess.call(code, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     
-
+def isbuildcapable():
+    try:
+        silent("pyinstaller -v")
+    except:
+        log.info("installing pyinstaller...")
+        try:
+            silent("pip install pyinstaller")
+        except:
+            log.warn("pyinstaller is not installed, please install it using 'pip install pyinstaller' for local builds")
+            return False
+    return True            
 def installrbxts():
     print("\033[1;33minfo \033[0m\033[90mCORE rcc:\033[0m rbxts requires npm to be installed")
     os.system("npm install -g typescript")
@@ -37,6 +51,7 @@ exec = {
         "repo": "roblox-compilers/roblox-py",
         "darwin": "rbxpy",
         "win32": "rbxpy.exe",
+        "mainfile": "src/rbxpy.py",
         "special": None
     },
     "teal": {
@@ -61,7 +76,8 @@ exec = {
         "repo": "roblox-compilers/roblox-c",
         "darwin": "rbxc",
         "win32": "rbxc.exe",
-        "special": notact
+        "mainfile": "src/rbxc.py",
+        "special": installincludes
     }, 
     "roblox-cs": {
         "repo": "roblox-compilers/roblox-cs",
@@ -86,6 +102,7 @@ exec = {
         "repo": "roblox-compilers/qts",
         "darwin": "qts",
         "win32": "qts.exe",
+        "mainfile": "src/qts.py",
         "special": None
     },
     "roblox-asm": {
@@ -98,6 +115,7 @@ exec = {
         "repo": "roblox-compilers/rcc",
         "darwin": "rcc",
         "win32": "rcc.exe",
+        "mainfile": "main.py",
         "special": None
     },
 }
@@ -135,7 +153,7 @@ relative = {
     "roblox-teal": "teal",
 }
 
-def install(pkg):
+def installpre(pkg):
     if (pkg in relative):
         if exec[relative[pkg]]["special"]:
             exec[relative[pkg]]["special"]()
@@ -155,7 +173,34 @@ def install(pkg):
     else:
         log.error(f"package '{pkg}' not found")
         sys.exit(1)   
-            
+def installloc(pkg):
+    if (pkg in relative):
+        if not hasattr(exec[relative[pkg]], "mainfile"):
+            installpre(pkg)
+            return
+        if exec[relative[pkg]]["special"]:
+            exec[relative[pkg]]["special"]()
+        if "specialin" in exec[relative[pkg]]:
+            exec[relative[pkg]]["specialin"]()
+        else:
+            path = f"https://github.com/{exec[relative[pkg]]['repo']}"
+            compile.check_exec("git")
+            log.info(f"Downloading {pkg}...")
+            silent(f"git clone {path}")
+            os.chdir(relative[pkg])
+            log.info(f"Building {pkg}...")
+            os.system(f"pyinstaller {exec[relative[pkg]]['mainfile']} --onefile")
+            os.chdir("dist")
+            for i in os.listdir():
+                bin(i)
+            os.chdir("..")
+            os.chdir("..")
+            #shutil.rmtree(relative[pkg])
+def install(pkg):
+    if isbuildcapable():
+        installloc(pkg)
+    else:
+        installpre(pkg)
 def bin(file):
     # Move the file to /usr/bin in macOS and Linux, and to C:\win32dows\System32 in windows
     

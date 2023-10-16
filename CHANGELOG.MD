@@ -6,6 +6,7 @@
 - Fixed windows support for subdirectories (TODO)
 - `rcc include` (rbxts packages are handled by qts -I)
 - C runtime support
+- Builds locally with `rcc install`
 - Teal, YueScript, and MoonScript core support
 - TextFile, XML, & JSON support
 - Report missing arguments
