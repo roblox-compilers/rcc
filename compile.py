@@ -1,6 +1,8 @@
 import os
 import log
 import runtime
+import texteng
+
 try:
     import shutil
 except:
@@ -11,18 +13,43 @@ def check_exec(name):
         os.system(name + " -v > /dev/null")
     except:
         log.error("compiler " + name + " not installed or cannot initialize")
-
 summerize = {
+    # Python
     "py": "compile_py",
+    
+    # C & C++
     "c": "compile_c",
     "C": "compile_c",
     "cpp": "compile_c",
     "cxx": "compile_c",
+    
+    # C#
     "cs": "compile_cs",
+    
+    # TS
     "ts": "compile_ts",
     "tsx": "compile_ts",
+    
+    # Kotlin
     "kt": "compile_kt",
-    "wasm": "compile_wasm",
+    
+    # Assembly
+    "asm": "compile_asm",
+    "S": "compile_asm",
+    "rasm": "compile_asm",
+    
+    # Lua (passthrough)
+    "lua": "passthrough",
+    "luau": "passthrough",
+    
+    # Teal
+    "tl": "compile_teal",
+    
+    # MoonScript
+    "moon": "compile_moon",
+    
+    # YueScript
+    "yue": "compile_yue",
 }
 
 def refileformat(file, old, new):
@@ -50,10 +77,32 @@ class Compilers:
         check_exec("rbxkt")
         os.system("rbxkt " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
         return "kt"
-    def compile_wasm(file, outfile):
-        check_exec("rbxwasm")
-        os.system("rbxwasm " + file + " > " + refileformat(outfile, fileformat(file), "lua"))
-        return "wasm"
+    def compile_asm(file, outfile):
+        check_exec("rasm")
+        os.system("rasm " + file + " > " + refileformat(outfile, fileformat(file), "lua"))
+        return "asm"
+    def compile_teal(file, outfile):
+        log.error("Teal is not supported yet")
+        #check_exec("tl")
+        #os.system("tl check " + file)
+        #os.system("tl gen " + file)
+        return "tl"
+    def compile_yue(file, outfile):
+        log.error("YueScript is not supported yet")
+        #check_exec("tl")
+        #os.system("tl check " + file)
+        #os.system("tl gen " + file)
+        return "yue"
+    def compile_moon(file, outfile):
+        log.error("MoonScript is not supported yet")
+        #check_exec("tl")
+        #os.system("tl check " + file)
+        #os.system("tl gen " + file)
+        return "moon"
+    def passthrough(file, outfile):
+        shutil.copyfile(file, outfile)
+        return "lua"
+    
 def compile(indir, outdir):
     # check if indir exists
     if not os.path.exists(indir):
@@ -69,8 +118,24 @@ def compile(indir, outdir):
     for root, dirs, files in os.walk(indir):
         for file in files:
             ext = file.split(".")[-1]
-            if not ext in summerize:
-                log.error("file extension " + ext + " not supported")
+            if ext not in summerize:
+                if not hasattr(texteng.TextEng, ext):
+                    log.error("file extension '" + ext + "' not supported")
+                else:
+                    # remove head from root
+                    rootitems = root.split("/")
+                    rootitems[0] = outdir
+                    outfile = "/".join(rootitems) + "/" + file
+                    file = root + "/" + file
+                    # if any of the parent folders of outfile do not exist, create them
+                    if not os.path.exists("/".join(outfile.split("/")[:-1])):
+                        os.makedirs("/".join(outfile.split("/")[:-1]))
+                    with open(file, "r") as f: 
+                        code = f.read()
+                    compiled = getattr(texteng.TextEng, ext)(code)
+                    with open(refileformat(outfile, ext, "lua"), "w") as f:
+                        f.write(compiled)
+                    continue
             summerized = summerize[ext]
             compiler = getattr(Compilers, summerized)
             # remove head from root

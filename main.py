@@ -3,6 +3,7 @@ import os
 import sys
 import compile
 import template
+import traceback
 try:
     import inquirer
     from inquirer import List
@@ -20,6 +21,14 @@ def help():
     print("\033[1mOptions:\033[0m")
     print("  \033[1m-o\033[0m\t\toutput directory (default: out)")
     print("  \033[1m<none>\033[0m\tinput directory (default: src)")
+    print("  \033[1m-d\033[0m\t\tdebug mode")
+    print("\033[1mExamples:\033[0m")
+    print("  \033[1mrcc\033[0m \033[1minstall\033[0m roblox-py")
+    print("  \033[1mrcc\033[0m \033[1muninstall\033[0m roblox-py")
+    print("  \033[1mrcc\033[0m \033[1mupdate\033[0m roblox-py")
+    print("  \033[1mrcc\033[0m \033[1m-o\033[0m out")
+    print("  \033[1mrcc\033[0m \033[1m-o\033[0m out src")
+    print("  \033[1mrcc\033[0m \033[1minclude\033[0m @roblox/roact")
 def display_option_menu(options, msg):
     questions = [
         List('option',
@@ -31,15 +40,30 @@ def display_option_menu(options, msg):
     selected_option = answers['option']
     return selected_option
 
-try:
+def main():#try:
     args = sys.argv[1:]
+    if "-d" in args:
+        global DEBUG
+        DEBUG = True
+        args.remove("-d")
     if len(args) == 0:
         # compile src to out
         compile.compile("src", "out")
     elif args[0] == "install":
-        install.install(args[1] or log.error("package name not provided"))
+        try: 
+            install.install(args[1])
+        except:
+            sys.exit(1)
     elif args[0] == "uninstall":
         install.delete(args[1] or log.error("package name not provided"))
+    elif args[0] == "build":
+        compile.compile("src", "out")
+        os.system("rojo build -o out.rbxmx")
+    elif args[0] == "include":
+        try: 
+            compile.include(args[1])
+        except:
+            sys.exit(1)
     elif args[0] == "update":
         install.delete(args[1] or log.error("package name not provided"))
         install.install(args[1])
@@ -88,6 +112,11 @@ try:
             sys.exit(1)
             
         compile.compile(inputf, outputf)       
+
+try:
+    main()
 except Exception as e:
-    print()
+    if DEBUG:
+        traceback.print_exc()
+    log.error(f"an error occurred, {e}")
     sys.exit(1)

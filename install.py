@@ -13,6 +13,7 @@ def qts():
     else:
         return True
     
+
 def installrbxts():
     print("\033[1;33minfo \033[0m\033[90mCORE rcc:\033[0m rbxts requires npm to be installed")
     os.system("npm install -g typescript")
@@ -37,7 +38,25 @@ exec = {
         "darwin": "rbxpy",
         "win32": "rbxpy.exe",
         "special": None
-    }, 
+    },
+    "teal": {
+        "repo": "roblox-compilers/luau-tl",
+        "darwin": "tl",
+        "win32": "tl.exe",
+        "special": None
+    },
+    "moonscript": {
+        "repo": "roblox-compilers/luau-ms",
+        "darwin": "moonc",
+        "win32": "moonc.exe",
+        "special": None
+    },
+    "yuescript": {
+        "repo": "roblox-compilers/luau-ys",
+        "darwin": "yuec",
+        "win32": "yuec.exe",
+        "special": None
+    },
     "roblox-c": {
         "repo": "roblox-compilers/roblox-c",
         "darwin": "rbxc",
@@ -69,10 +88,10 @@ exec = {
         "win32": "qts.exe",
         "special": None
     },
-    "roblox-wasm": {
-        "repo": "roblox-compilers/roblox-wasm",
-        "darwin": "rbxwasm",
-        "win32": "rbxwasm.exe",
+    "roblox-asm": {
+        "repo": "roblox-compilers/rasm",
+        "darwin": "rasm",
+        "win32": "rasm.exe",
         "special": None
     },
     "rcc": {
@@ -90,12 +109,19 @@ relative = {
     "rbxcs": "roblox-cs",
     "rbxts": "roblox-ts",
     "rbxkt": "roblox-kt",
-    "rbxwasm": "roblox-wasm",
+    "rbxasm": "roblox-asm",
     
     # Other
     "qts": "qts",
-    "wasm": "roblox-wasm",
+    "asm": "roblox-asm",
+    "rasm": "roblox-asm",
     "rcc": "rcc",
+    "tl": "teal",
+    "teal": "teal",
+    "moon": "moonscript",
+    "ms": "moonscript",
+    "yue": "yuescript",
+    "ys": "yuescript",
     
     # roblox-
     "roblox-py": "roblox-py",
@@ -103,7 +129,10 @@ relative = {
     "roblox-cs": "roblox-cs",
     "roblox-ts": "roblox-ts",
     "roblox-kt": "roblox-kt",
-    "roblox-wasm": "roblox-wasm",
+    "roblox-asm": "roblox-asm",
+    "roblox-moon": "moonscript",
+    "roblox-yue": "yuescript",
+    "roblox-teal": "teal",
 }
 
 def install(pkg):
@@ -125,7 +154,7 @@ def install(pkg):
             
     else:
         log.error(f"package '{pkg}' not found")
-            
+        sys.exit(1)   
             
 def bin(file):
     # Move the file to /usr/bin in macOS and Linux, and to C:\win32dows\System32 in windows
