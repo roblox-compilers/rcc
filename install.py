@@ -58,18 +58,21 @@ exec = {
         "repo": "roblox-compilers/luau-tl",
         "darwin": "tl",
         "win32": "tl.exe",
+        "mainfile": None,
         "special": None
     },
     "moonscript": {
         "repo": "roblox-compilers/luau-ms",
         "darwin": "moonc",
         "win32": "moonc.exe",
+        "mainfile": None,
         "special": None
     },
     "yuescript": {
         "repo": "roblox-compilers/luau-ys",
         "darwin": "yuec",
         "win32": "yuec.exe",
+        "mainfile": None,
         "special": None
     },
     "roblox-c": {
@@ -83,12 +86,14 @@ exec = {
         "repo": "roblox-compilers/roblox-cs",
         "darwin": "rbxcs",
         "win32": "rbxcs.exe",
+        "mainfile": None,
         "special": notact
     },
     "roblox-ts": {
         "repo": "roblox-compilers/roblox-ts",
         "darwin": "rbxtsc",
         "win32": "rbxtsc.exe",
+        "mainfile": None,
         "special": qts,
         "specialin": installrbxts
     },
@@ -96,6 +101,7 @@ exec = {
         "repo": "roblox-compilers/roblox-kt",
         "darwin": "rbxkt",
         "win32": "rbxkt.exe",
+        "mainfile": None,
         "special": notact
     },
     "qts": {
@@ -109,13 +115,14 @@ exec = {
         "repo": "roblox-compilers/rasm",
         "darwin": "rasm",
         "win32": "rasm.exe",
+        "mainfile": None,
         "special": None
     },
     "rcc": {
         "repo": "roblox-compilers/rcc",
         "darwin": "rcc",
         "win32": "rcc.exe",
-        "mainfile": "main.py",
+        "mainfile": "rcc.py",
         "special": None
     },
 }
@@ -175,7 +182,7 @@ def installpre(pkg):
         sys.exit(1)   
 def installloc(pkg):
     if (pkg in relative):
-        if not hasattr(exec[relative[pkg]], "mainfile"):
+        if exec[relative[pkg]]["mainfile"] == None:
             installpre(pkg)
             return
         if exec[relative[pkg]]["special"]:
@@ -185,17 +192,17 @@ def installloc(pkg):
         else:
             path = f"https://github.com/{exec[relative[pkg]]['repo']}"
             compile.check_exec("git")
-            log.info(f"Downloading {pkg}...")
+            log.info(f"downloading {pkg}...")
             silent(f"git clone {path}")
             os.chdir(relative[pkg])
-            log.info(f"Building {pkg}...")
+            log.info(f"building {pkg}...")
             os.system(f"pyinstaller {exec[relative[pkg]]['mainfile']} --onefile")
             os.chdir("dist")
             for i in os.listdir():
                 bin(i)
             os.chdir("..")
             os.chdir("..")
-            #shutil.rmtree(relative[pkg])
+            shutil.rmtree(relative[pkg])
 def install(pkg):
     if isbuildcapable():
         installloc(pkg)
@@ -203,7 +210,7 @@ def install(pkg):
         installpre(pkg)
 def bin(file):
     # Move the file to /usr/bin in macOS and Linux, and to C:\win32dows\System32 in windows
-    
+    log.info("installing " + file + "...")
     if sys.platform == "win32":
         path = f"C:\\windows\\System32\\{file}"
     else:
