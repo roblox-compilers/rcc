@@ -5,7 +5,7 @@ import os, subprocess
 
 def installPip(pkg):
     try:
-        exec(f"import {pkg}")
+        __import__(pkg)
         print(f"{pkg} already installed")
     except:
         print(f"installing {pkg}...")

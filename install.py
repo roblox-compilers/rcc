@@ -3,6 +3,7 @@ Handles all the packages
 """
 import os, sys
 import log
+import importlib.util
 try:
     import requests
 except:
@@ -42,6 +43,36 @@ def installincludes():
     else:
         with open("/usr/local/include/rbx.h", "w") as f:
             f.write(contents)
+def installpyincludes():
+    log.info("installing roblox-py includes...")
+    dir = ""
+    for i in sys.path:
+        if i.endswith("site-packages"):
+            dir = i
+            break
+    path = dir + "/rbx.py"
+    print(path)
+    log.info("loading binding engine...")
+    contents = requests.get("https://raw.githubusercontent.com/roblox-compilers/bindings/main/fetch.py").text
+    with open("roblox_bindings.py", "w") as f:
+        f.write(contents)
+    log.info("preparing binding engine...")
+    spec = importlib.util.spec_from_file_location('roblox_bindings', 'roblox_bindings.py')
+    fetch = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(fetch)
+    log.info("generating bindings...")
+    newCreator = fetch.Creator() # default is roblox-py
+    rendered = fetch.render(newCreator)
+    log.info("installing bindings...")
+    with open(path, "w") as f:
+        f.write(rendered)
+    log.info("installed bindings")
+    # delete fetch
+    os.remove("roblox_bindings.py")
+    del rendered 
+    del fetch
+    del newCreator
+    
 def tl():
     log.error("Teal does not need to be installed since it is prebuilt into RCC.")
     
@@ -54,7 +85,7 @@ exec = {
         "darwin": "rbxpy",
         "win32": "rbxpy.exe",
         "mainfile": "src/rbxpy.py",
-        "special": None
+        "special": installpyincludes
     },
     "teal": {
         "repo": "",
