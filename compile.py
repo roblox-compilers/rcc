@@ -145,7 +145,7 @@ RCCTEAL.reportwarn = function(category, errors)
     if #errors > 0 then
         local n = #errors
         for _, err in ipairs(errors) do
-            print("\\27[1;33mwarning \\27[0m\\27[90mTEAL rcc-teal:\\27[0m" .. err.filename .. ":\\27[1m" .. err.y .. ":" .. err.x .. ": " .. (err.msg or "") .. "\\27[0m")
+            print("\\27[1;33mwarning \\27[0m\\27[90mTEAL rcc-teal:\\27[0m " .. err.filename .. ":\\27[1m" .. err.y .. ":" .. err.x .. ": " .. (err.msg or "") .. "\\27[0m")
         end
         return true
     end
@@ -163,6 +163,11 @@ end
         if compiled.error:
             log.error(compiled.error)
         if len(compiled.result.syntax_errors) == 0:
+            if len(compiled.result.warnings) > 0:
+                tl.reportwarn("warning", compiled.result.warnings)
+            if len(compiled.result.type_errors) > 0:
+                tl.report("type error", compiled.result.type_errors)
+                sys.exit(1)
             ret = tl.write_out({
                 "gen_target": "lua51"
                 }, compiled.result, refileformat(outfile, fileformat(file), "lua"))
@@ -171,13 +176,6 @@ end
         else:
             print("\n")
             tl.report("syntax error", compiled.result.syntax_errors)
-            sys.exit(1)
-        
-        if len(compiled.result.warnings) > 0:
-            tl.reportwarn("warning", compiled.result.warnings)
-            
-        if len(compiled.result.type_errors) > 0:
-            tl.report("type error", compiled.result.type_errors)
             sys.exit(1)
             
         return "tl"
