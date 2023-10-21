@@ -111,7 +111,7 @@ exec = {
         "repo": "roblox-compilers/qts",
         "darwin": "qts",
         "win32": "qts.exe",
-        "mainfile": "src/qts.py",
+        "mainfile": "qts.py",
         "special": None
     },
     "roblox-asm": {

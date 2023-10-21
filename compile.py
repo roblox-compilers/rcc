@@ -1,4 +1,4 @@
-import os, requests, time, sys
+import os, requests, time, sys, subprocess
 import log
 import runtime
 import texteng
@@ -11,7 +11,7 @@ except:
     
 def check_exec(name):
     try:
-        os.system(name + " -v > /dev/null")
+        saferun(name + " -v > /dev/null")
     except:
         log.error("compiler " + name + " not installed or cannot initialize")
 summerize = {
@@ -58,18 +58,22 @@ def refileformat(file, old, new):
     return ".".join(file.split(".")[:-1]) + "." + new
 def fileformat(file):
     return file.split(".")[-1]
+def saferun(cmd):
+    succ = subprocess.run(cmd, shell=True)
+    if succ.returncode != 0:
+        log.error("operation failed")
 class Compilers:
     def compile_py(file, outfile):
         check_exec("rbxpy")
-        os.system("rbxpy " + file + " -r -o " + refileformat(outfile, fileformat(file), "lua"))
+        saferun("rbxpy " + file + " -r -o " + refileformat(outfile, fileformat(file), "lua"))
         return "py"
     def compile_c(file, outfile):
         check_exec("rbxc")
-        os.system("rbxc " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
+        saferun("rbxc " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
         return "c"
     def compile_cs(file, outfile):
         check_exec("rbxcs")
-        os.system("rbxcs " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
+        saferun("rbxcs " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
         return "cs"
     def compile_ts(file, outfile):
         check_exec("qts")
@@ -80,15 +84,15 @@ class Compilers:
             if "dependencies" in package:
                 for i in package["dependencies"]:
                     pkgs.append(i)
-        os.system("qts " + file + " -o " + refileformat(outfile, fileformat(file), "lua") + " -I " + " -I ".join(pkgs))
+        saferun("qts " + file + " -o " + refileformat(outfile, fileformat(file), "lua") + " -I " + " -I ".join(pkgs))
         return "ts"
     def compile_kt(file, outfile):
         check_exec("rbxkt")
-        os.system("rbxkt " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
+        saferun("rbxkt " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
         return "kt"
     def compile_asm(file, outfile):
         check_exec("rasm")
-        os.system("rasm " + file + " > " + refileformat(outfile, fileformat(file), "lua"))
+        saferun("rasm " + file + " > " + refileformat(outfile, fileformat(file), "lua"))
         return "asm"
     def compile_teal(file, outfile):
         tl_link = "https://raw.githubusercontent.com/teal-language/tl/master/tl.lua"
@@ -182,19 +186,19 @@ end
     def compile_yue(file, outfile):
         log.error("YueScript is not supported yet")
         #check_exec("tl")
-        #os.system("tl check " + file)
-        #os.system("tl gen " + file)
+        #saferun("tl check " + file)
+        #saferun("tl gen " + file)
         return "yue"
     def compile_jupyter(file, outfile):
         check_exec("rbxpy")
-        os.system("rbxpy " + file + " -r -j -o " + refileformat(outfile, fileformat(file), "lua"))
+        saferun("rbxpy " + file + " -r -j -o " + refileformat(outfile, fileformat(file), "lua"))
         return "py"
     
     def compile_moon(file, outfile):
         log.error("MoonScript is not supported yet")
         #check_exec("tl")
-        #os.system("tl check " + file)
-        #os.system("tl gen " + file)
+        #saferun("tl check " + file)
+        #saferun("tl gen " + file)
         return "moon"
     def passthrough(file, outfile):
         shutil.copyfile(file, outfile)

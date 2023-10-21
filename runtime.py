@@ -4,7 +4,7 @@ class RuntimeEngine:
     def py_runtime():
         return subprocess.check_output(["rbxpy", "-s"])
     def c_runtime():
-        return subprocess.check_output(["rbxc", "-s", "-o", "cruntime.lua"])
+        return subprocess.check_output(["rbxc", "-s", "-o", "/dev/null"])
     @classmethod
     def load(self, languages, outdir):
         for i in languages:
@@ -15,5 +15,5 @@ class RuntimeEngine:
             elif i == "c":
                 # make new file "pyruntime.lua" in outdir and write py_runtime() to it
                 with open(outdir + "/cruntime.lua", "w") as f:
-                    f.write(self.py_runtime().decode("utf-8"))
+                    f.write(self.c_runtime().decode("utf-8"))
                 
