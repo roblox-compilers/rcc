@@ -14,7 +14,7 @@
 - Support Lua files in RCC projects
 - RCC library 
 - `rcc build`
-# RCC 1.1.2 DEV
+# RCC 1.2.1 DEV
 - Changed `rcc build` to output out.rbxmx to game.rbxmx
 - Fixed `rcc init` bug arised from Python 3.12
 - `Teal` support
