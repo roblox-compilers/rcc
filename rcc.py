@@ -64,7 +64,7 @@ def main():#try:
         install.delete(args[1] or log.error("package name not provided"))
     elif args[0] == "build":
         compile.compile("src", "out")
-        os.system("rojo build -o out.rbxmx")
+        os.system("rojo build -o game.rbxmx")
     elif args[0] == "include":
         try: 
             if args[1].startswith("@rbxts/"):
@@ -87,6 +87,7 @@ def main():#try:
                     log.error("include failed, " + str(e))
             
         except:
+            log.error("include failed")
             sys.exit(1)
     elif args[0] == "update":
         install.delete(args[1] or log.error("package name not provided"))
@@ -140,10 +141,10 @@ def main():#try:
             
         compile.compile(inputf, outputf)       
 
-try:
-    main()
-except Exception as e:
-    if DEBUG:
-        traceback.print_exc()
-    log.error(f"an error occurred, {e}")
-    sys.exit(1)
+#try:
+main()
+#except Exception as e:
+#    if DEBUG:
+#        traceback.print_exc()
+#    log.error(f"an error occurred, {e}")
+#    sys.exit(1)

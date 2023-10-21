@@ -42,7 +42,9 @@ def installincludes():
     else:
         with open("/usr/local/include/rbx.h", "w") as f:
             f.write(contents)
-            
+def tl():
+    log.error("Teal does not need to be installed since it is prebuilt into RCC.")
+    
 def notact():
     log.error("not available")
     
@@ -55,10 +57,11 @@ exec = {
         "special": None
     },
     "teal": {
-        "repo": "roblox-compilers/luau-tl",
+        "repo": "",
         "darwin": "tl",
         "win32": "tl.exe",
         "mainfile": None,
+        "specialin": tl,
         "special": None
     },
     "moonscript": {

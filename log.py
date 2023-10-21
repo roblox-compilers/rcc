@@ -5,4 +5,4 @@ def error(msg):
     sys.exit(1)
     
 def info(msg):
-    print(f"\033[1;33minfo \033[0m\033[90mCORE rcc:\033[0m {msg}")
+    print(f"\033[1;34minfo \033[0m\033[90mCORE rcc:\033[0m {msg}")
