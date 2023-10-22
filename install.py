@@ -62,7 +62,7 @@ def installpyincludes():
     log.info("generating bindings...")
     newCreator = fetch.Python()
     rendered = fetch.render(newCreator)
-    log.info("installing bindings...")
+    log.info(f"installing bindings to {path}...")
     with open(path, "w") as f:
         f.write(rendered)
     log.info("installed bindings")
