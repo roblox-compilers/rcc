@@ -163,11 +163,12 @@ end
         lua = lupa.LuaRuntime()
         def get(lib):
             lua.execute(lib)
-            tl = lua.globals().RCCTEAL"""
+            tl = lua.globals().RCCTEAL
+            return tl"""
         embeded_globals = {}
-        code.interact(local=embeded_globals, banner=embed, exitmsg="")
+        code.interact(local=embeded_globals, banner="", exitmsg="")
         exec(embed, embeded_globals)
-        tl = embeded_globals["get"](lib)["tl"]
+        tl = embeded_globals["get"](lib)
         compiled = tl.pyprocess(file)
         if compiled.error:
             log.error(compiled.error)
