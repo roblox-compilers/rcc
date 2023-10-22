@@ -166,7 +166,6 @@ end
             tl = lua.globals().RCCTEAL
             return tl"""
         embeded_globals = {}
-        code.interact(local=embeded_globals, banner="", exitmsg="")
         exec(embed, embeded_globals)
         tl = embeded_globals["get"](lib)
         compiled = tl.pyprocess(file)
