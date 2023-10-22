@@ -157,14 +157,14 @@ RCCTEAL.reportwarn = function(category, errors)
 end
 """
         embed = """try:
-            import lupa
-        except:
-            log.error("lupa not installed, please install it using 'pip install lupa'")
-        lua = lupa.LuaRuntime()
-        def get(lib):
-            lua.execute(lib)
-            tl = lua.globals().RCCTEAL
-            return tl"""
+    import lupa
+except:
+    log.error("lupa not installed, please install it using 'pip install lupa'")
+lua = lupa.LuaRuntime()
+def get(lib):
+    lua.execute(lib)
+    tl = lua.globals().RCCTEAL
+    return tl"""
         embeded_globals = {}
         exec(embed, embeded_globals)
         tl = embeded_globals["get"](lib)
