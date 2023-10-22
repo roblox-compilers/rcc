@@ -1,4 +1,4 @@
-import os, requests, time, sys, subprocess
+import os, requests, time, sys, subprocess, code
 import log
 import runtime
 import texteng
@@ -156,13 +156,18 @@ RCCTEAL.reportwarn = function(category, errors)
     return false
 end
 """
-        try:
+        embed = """try:
             import lupa
         except:
             log.error("lupa not installed, please install it using 'pip install lupa'")
         lua = lupa.LuaRuntime()
-        lua.execute(lib)
-        tl = lua.globals().RCCTEAL
+        def get(lib):
+            lua.execute(lib)
+            tl = lua.globals().RCCTEAL"""
+        embeded_globals = {}
+        code.interact(local=embeded_globals, banner=embed, exitmsg="")
+        exec(embed, embeded_globals)
+        tl = embeded_globals["get"](lib)["tl"]
         compiled = tl.pyprocess(file)
         if compiled.error:
             log.error(compiled.error)
