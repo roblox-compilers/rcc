@@ -220,19 +220,22 @@ def installloc(pkg):
         if "specialin" in exec[relative[pkg]]:
             exec[relative[pkg]]["specialin"]()
         else:
-            path = f"https://github.com/{exec[relative[pkg]]['repo']}"
-            compile.check_exec("git")
-            log.info(f"downloading {pkg}...")
-            silent(f"git clone {path}")
-            os.chdir(relative[pkg])
-            log.info(f"building {pkg}...")
-            os.system(f"pyinstaller {exec[relative[pkg]]['mainfile']} --onefile")
-            os.chdir("dist")
-            for i in os.listdir():
-                bin(i)
-            os.chdir("..")
-            os.chdir("..")
-            shutil.rmtree(relative[pkg])
+            try:
+                path = f"https://github.com/{exec[relative[pkg]]['repo']}"
+                compile.check_exec("git")
+                log.info(f"downloading {pkg}...")
+                silent(f"git clone {path}")
+                os.chdir(relative[pkg])
+                log.info(f"building {pkg}...")
+                os.system(f"pyinstaller {exec[relative[pkg]]['mainfile']} --onefile")
+                os.chdir("dist")
+                for i in os.listdir():
+                    bin(i)
+                os.chdir("..")
+                os.chdir("..")
+                shutil.rmtree(relative[pkg])
+            except KeyboardInterrupt:
+                log.error(f"installation failed: user cancelled. {exec[relative[pkg]]['repo']} may no longer be installed or may be corrupted")
 def install(pkg):
     if isbuildcapable():
         installloc(pkg)

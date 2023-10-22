@@ -10,9 +10,8 @@ def get(author, name, isDependant=False):
     wallyurl = "https://api.wally.run/v1/"
 
     # first get package metadata should look like:
-    metadataurl = wallyurl+"/package-metadata/"+author+"/"+name
+    metadataurl = wallyurl+"package-metadata/"+author+"/"+name
     data = requests.get(metadataurl).text
-    print(data, metadataurl)
     jsondata = json.loads(data)
     
     if 'message' in jsondata:
