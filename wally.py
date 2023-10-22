@@ -6,6 +6,7 @@ error = log.error
 def get(author, name, isDependant=False):
     # Use wally and download the zip and unpack it
     info(f"Getting @{author}/{name} metadata")
+    print(os.getcwd())
     wallyurl = "https://api.wally.run/v1/"
 
     # first get package metadata should look like:

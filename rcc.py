@@ -86,8 +86,8 @@ def main():#try:
                 except Exception as e:
                     log.error("include failed, " + str(e))
             
-        except:
-            log.error("include failed")
+        except Exception as e:
+            log.error(f"include failed: {e}")
             sys.exit(1)
     elif args[0] == "update":
         install.delete(args[1] or log.error("package name not provided"))
