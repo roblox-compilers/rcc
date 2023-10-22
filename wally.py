@@ -1,4 +1,4 @@
-import log, requests, json, os, zipfile, sys
+import log, requests, json, os, zipfile
 # Download from wally 
 info = log.info
 error = log.error
@@ -6,16 +6,16 @@ error = log.error
 def get(author, name, isDependant=False):
     # Use wally and download the zip and unpack it
     info(f"Getting @{author}/{name} metadata")
-    print(os.getcwd())
     wallyurl = "https://api.wally.run/v1/"
 
     # first get package metadata should look like:
     metadataurl = wallyurl+"/package-metadata/"+author+"/"+name
     data = requests.get(metadataurl).text
+    print(data)
     jsondata = json.loads(data)
     
     if 'message' in jsondata:
-        error(jsondata["message"])
+        error("wally raised, " + jsondata["message"])
     jsondata = json.loads(data)["versions"]
     #get latest version and dependencies
     latestver = jsondata[0]
