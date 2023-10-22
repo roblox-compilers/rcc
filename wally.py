@@ -1,3 +1,4 @@
+from curses import meta
 import log, requests, json, os, zipfile
 # Download from wally 
 info = log.info
@@ -11,7 +12,7 @@ def get(author, name, isDependant=False):
     # first get package metadata should look like:
     metadataurl = wallyurl+"/package-metadata/"+author+"/"+name
     data = requests.get(metadataurl).text
-    print(data)
+    print(data, metadataurl)
     jsondata = json.loads(data)
     
     if 'message' in jsondata:
