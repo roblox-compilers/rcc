@@ -156,11 +156,12 @@ RCCTEAL.reportwarn = function(category, errors)
     return false
 end
 """
-        embed = """try:
+        embed = """import sys
+try:
     import lupa
 except:
     print("RCC rcc-internal: lupa not installed, please install it using 'pip install lupa'")
-    exit()
+    sys.exit(1)
 lua = lupa.LuaRuntime()
 def get(lib):
     lua.execute(lib)
