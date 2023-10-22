@@ -159,7 +159,8 @@ end
         embed = """try:
     import lupa
 except:
-    log.error("lupa not installed, please install it using 'pip install lupa'")
+    print("RCC rcc-internal: lupa not installed, please install it using 'pip install lupa'")
+    exit()
 lua = lupa.LuaRuntime()
 def get(lib):
     lua.execute(lib)
