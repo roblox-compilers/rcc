@@ -51,7 +51,6 @@ def installpyincludes():
             dir = i
             break
     path = dir + "/rbx.py"
-    print(path)
     log.info("loading binding engine...")
     contents = requests.get("https://raw.githubusercontent.com/roblox-compilers/bindings/main/fetch.py").text
     with open("roblox_bindings.py", "w") as f:
@@ -61,7 +60,7 @@ def installpyincludes():
     fetch = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(fetch)
     log.info("generating bindings...")
-    newCreator = fetch.Creator() # default is roblox-py
+    newCreator = fetch.Python()
     rendered = fetch.render(newCreator)
     log.info("installing bindings...")
     with open(path, "w") as f:
