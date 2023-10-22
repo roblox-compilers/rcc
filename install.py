@@ -45,11 +45,8 @@ def installincludes():
             f.write(contents)
 def installpyincludes():
     log.info("installing roblox-py includes...")
-    dir = ""
-    for i in sys.path:
-        if i.endswith("site-packages"):
-            dir = i
-            break
+    dir = sys.path[0]
+    
     path = dir + "/rbx.py"
     log.info("loading binding engine...")
     contents = requests.get("https://raw.githubusercontent.com/roblox-compilers/bindings/main/fetch.py").text
