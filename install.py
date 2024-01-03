@@ -243,18 +243,11 @@ def install(pkg):
         installpre(pkg)
 def bin(file):
     # Move the file to /usr/bin in macOS and Linux, and to C:\win32dows\System32 in windows
-    log.info("installing " + file + "...")
-    if sys.platform == "win32":
-        path = f"C:\\windows\\System32\\{file}"
-    else:
+    if sys.platform != "win32":
+        log.info("securing " + file + "...")
         os.system(f"chmod +x {file}")
-        path = f"/usr/local/bin/{file}"
-    
-    # move {file} to {path}
-    try:
-        os.rename(file, path)
-    except Exception as e:
-        log.error(f"installation failed: {e}")
+
+    log.info("successfully generated " + file)
         
 def delete(file):
     log.info(f"uninstalling {file}...")
