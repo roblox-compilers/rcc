@@ -45,7 +45,7 @@ def installincludes():
             f.write(contents)
 def installpyincludes():
     log.info("installing roblox-py includes...")
-    dir = sys.path[0]
+    dir = input("Please enter the path to your Python include folder: ")
     
     path = dir + "/rbx.py"
     log.info("loading binding engine...")
