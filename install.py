@@ -248,6 +248,8 @@ def bin(file):
         os.system(f"chmod +x {file}")
 
     log.info("successfully generated " + file)
+    cwd = os.getcwd()
+    os.rename(file, cwd + "/" + file)
         
 def delete(file):
     log.info(f"uninstalling {file}...")
