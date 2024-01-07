@@ -220,7 +220,13 @@ def compile(indir, outdir):
     if not os.path.exists(outdir):
         os.mkdir(outdir)
     else:
-        shutil.rmtree(outdir)
+        # Clear outdir
+        for root, dirs, files in os.walk(outdir):
+            for file in files:
+                os.remove(root + "/" + file)
+            for dir in dirs:
+                shutil.rmtree(root + "/" + dir)
+                
         
     # walk through files in indir
     languages = []
