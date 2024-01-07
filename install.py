@@ -244,12 +244,13 @@ def install(pkg):
 def bin(file):
     # Move the file to /usr/bin in macOS and Linux, and to C:\win32dows\System32 in windows
     if sys.platform != "win32":
-        log.info("securing " + file + "...")
         os.system(f"chmod +x {file}")
+        log.info("secured " + file + "...")
 
-    log.info("successfully generated " + file)
-    cwd = os.getcwd()
-    os.rename(file, cwd + "/" + file)
+    name = file.split(".")[len(file.split(".")) - 2]
+
+    os.rename(file, "~/" + name)
+    log.info("successfully generated " + "~/" + name)
         
 def delete(file):
     log.info(f"uninstalling {file}...")
