@@ -249,7 +249,10 @@ def bin(file):
 
     name = file.split(".")[len(file.split(".")) - 2]
 
-    os.rename(file, "~/" + name)
+    try:
+        shutil.move(file, input("Please enter the path to your bin folder: "))
+    except Exception as e:
+        log.error(f"failed to move {file}: {e}")
     log.info("successfully generated " + "~/" + name)
         
 def delete(file):
