@@ -58,7 +58,8 @@ def main():#try:
     elif args[0] == "install":
         try: 
             install.install(args[1])
-        except:
+        except Exception as e:
+            log.error(f"install failed: {e}")
             sys.exit(1)
     elif args[0] == "uninstall":
         install.delete(args[1] or log.error("package name not provided"))

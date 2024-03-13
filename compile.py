@@ -9,9 +9,12 @@ try:
 except:
     log.error("shutil not installed, please install it using 'pip install shutil'")
     
-def check_exec(name):
+def check_exec(name, check = "-v"):
+    format = "/dev/null"
+    if os.name == "nt":
+        format = "NUL"
     try:
-        saferun(name + " -v > /dev/null")
+        saferun(f"{name} {check} > {format}")
     except:
         log.error("compiler " + name + " not installed or cannot initialize")
 summerize = {

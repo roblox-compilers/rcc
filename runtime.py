@@ -4,7 +4,7 @@ class RuntimeEngine:
     def py_runtime():
         return subprocess.check_output(["rbxpy", "-s"])
     def c_runtime():
-        return subprocess.check_output(["rbxc", "-s", "-o", "/dev/null"])
+        return subprocess.check_output(["rbxc", "-s"])
     @classmethod
     def load(self, languages, outdir):
         for i in languages:

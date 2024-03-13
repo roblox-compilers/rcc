@@ -222,7 +222,7 @@ def installloc(pkg):
         else:
             try:
                 path = f"https://github.com/{exec[relative[pkg]]['repo']}"
-                compile.check_exec("git")
+                compile.check_exec("git", "--version")
                 log.info(f"downloading {pkg}...")
                 silent(f"git clone {path}")
                 os.chdir(relative[pkg])
