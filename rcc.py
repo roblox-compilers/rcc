@@ -66,6 +66,23 @@ def main():#try:
         compile.compile("src", "out")
         os.system("rojo build -o game.rbxmx")
     elif args[0] == "include":
+        if len(args) < 2:
+            if not os.path.exists("rcc-config.json"):
+                log.error("rcc-config.json not found")
+            
+            with open("rcc-config.json", "r") as f:
+                config = json.load(f)
+                if "include" not in config:
+                    log.error("no packages included")
+                else:
+                    for package in config["include"]:
+                        try:
+                            wally.get(package.split("/")[0].replace("@", ""), package.split("/")[1])
+                        except Exception as e:
+                            log.error(f"include failed, {e}")
+            
+            sys.exit(0)
+
         try: 
             if args[1].startswith("@rbxts/"):
                 with open("package.json", "r") as f:
@@ -81,6 +98,21 @@ def main():#try:
             else:
                 author = args[1].split("/")[0].replace("@", "")
                 name = args[1].split("/")[1]
+
+                with open("rcc-config.json", "a+") as f:
+                    contents = f.read()
+                    if contents == "":
+                        contents = "{}"
+                    config = json.loads(contents)
+                    if "include" not in config:
+                        config["include"] = []
+                    if config["include"].count(args[1]) > 0:
+                        log.error("package already included")
+                        sys.exit(1)
+                    config["include"].append(args[1])
+                    with open("rcc-config.json", "w") as f:
+                        f.write(json.dumps(config, indent=4))
+
                 try:
                     wally.get(author, name)
                 except Exception as e:
