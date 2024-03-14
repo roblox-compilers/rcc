@@ -128,7 +128,7 @@ def main():#try:
     elif args[0] == "help":
         help()
     elif args[0] == "init":
-        options = ["roblox-py", "roblox-c (C)", "roblox-c (C++)", "roblox-cs", "roblox-kt"]
+        options = ["roblox-py", "fullstack", "roblox-c (C)", "roblox-c (C++)", "roblox-cs"]
         chosen = None
         if len(args) > 1:
             chosen = args[1]
