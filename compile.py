@@ -248,12 +248,13 @@ def compile(indir, outdir, predir):
                     file = root + "/" + file
                     # if the file ends with .meta.+ext, skip it and just add it to outdir
                     if file.split(".")[-2] == "meta":
+                        print(file, outfile)
                         # add the file as it is to outdir
                         with open(file, "r") as f:
                             code = f.read()
                         with open(outfile, "w") as f:
                             f.write(code)
-                            
+
                         continue
                     # if any of the parent folders of outfile do not exist, create them
                     if not os.path.exists("/".join(outfile.split("/")[:-1])):
