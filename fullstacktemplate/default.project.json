@@ -8,10 +8,7 @@
         "$path": "out/shared"
       },
       "Packages": {
-        "$path": "include"
-      },
-			"rbxts_include": {
-				"$path": "include",
+        "$path": "include",
 				"node_modules": {
 					"$className": "Folder",
 					"@rbxts": {
