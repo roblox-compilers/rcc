@@ -26,7 +26,7 @@ def isbuildcapable():
         try:
             silent("pip install pyinstaller")
         except:
-            log.warn("pyinstaller is not installed, please install it using 'pip install pyinstaller' for local builds")
+            log.error("pyinstaller is not installed, please install it using 'pip install pyinstaller' for local builds")
             return False
     return True            
 def installrbxts():
