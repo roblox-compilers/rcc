@@ -73,7 +73,10 @@ def main():#try:
     elif args[0] == "include":
         if len(args) < 2:
             if not os.path.exists("rcc-config.json"):
-                log.error("rcc-config.json not found")
+                log.warn("rcc-config.json not found")
+            if os.path.exists("package.json"):
+                compile.check_exec("npm", "--version")
+                os.system("npm install")
             
             with open("rcc-config.json", "r") as f:
                 config = json.load(f)
