@@ -241,14 +241,16 @@ def compile(indir, outdir, predir):
                 if not hasattr(texteng.TextEng, ext):
                     log.error("file extension '" + ext + "' not supported")
                 else:
-                    # if the file ends with .meta.+ext, skip it
-                    if file.split(".")[-2] == "meta":
-                        continue
                     # remove head from root
                     rootitems = root.split("/")
                     rootitems[0] = outdir
                     outfile = "/".join(rootitems) + "/" + file
                     file = root + "/" + file
+                    # if the file ends with .meta.+ext, skip it and just add it to outdir
+                    if file.split(".")[-2] == "meta":
+                        # add the file as it is to outdir
+                        shutil.copyfile(file, outfile)
+                        continue
                     # if any of the parent folders of outfile do not exist, create them
                     if not os.path.exists("/".join(outfile.split("/")[:-1])):
                         os.makedirs("/".join(outfile.split("/")[:-1]))
