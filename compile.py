@@ -241,6 +241,9 @@ def compile(indir, outdir, predir):
                 if not hasattr(texteng.TextEng, ext):
                     log.error("file extension '" + ext + "' not supported")
                 else:
+                    # if the file ends with .meta.+ext, skip it
+                    if file.split(".")[-2] == "meta":
+                        continue
                     # remove head from root
                     rootitems = root.split("/")
                     rootitems[0] = outdir
