@@ -54,7 +54,7 @@ def main():#try:
         args.remove("-d")
     if len(args) == 0:
         # compile src to out
-        compile.compile("src", "out")
+        compile.compile("src", "out", "pre")
     elif args[0] == "install":
         try: 
             install.install(args[1])
@@ -64,8 +64,12 @@ def main():#try:
     elif args[0] == "uninstall":
         install.delete(args[1] or log.error("package name not provided"))
     elif args[0] == "build":
-        compile.compile("src", "out")
-        os.system("rojo build -o game.rbxmx")
+        compile.check_exec("rojo", "--version")
+        compile.compile("src", "out", "pre")
+        output = "game.rbxl"
+        if len(args) > 1:
+            output = args[1]
+        os.system("rojo build -o " + output)
     elif args[0] == "include":
         if len(args) < 2:
             if not os.path.exists("rcc-config.json"):
@@ -172,7 +176,7 @@ def main():#try:
             log.error("input directory does not exist")
             sys.exit(1)
             
-        compile.compile(inputf, outputf)       
+        compile.compile(inputf, outputf, "pre")       
 
 #try:
 main()

@@ -57,13 +57,16 @@ summerize = {
     "yue": "compile_yue",
 }
 
+ts = ["ts", "tsx"]
 def refileformat(file, old, new):
     return ".".join(file.split(".")[:-1]) + "." + new
 def fileformat(file):
     return file.split(".")[-1]
-def saferun(cmd):
+def saferun(cmd, fallback = None):
     succ = subprocess.run(cmd, shell=True)
     if succ.returncode != 0:
+        if fallback:
+            fallback()
         log.error("operation failed")
 class Compilers:
     def compile_py(file, outfile):
@@ -79,15 +82,7 @@ class Compilers:
         saferun("rbxcs " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
         return "cs"
     def compile_ts(file, outfile):
-        check_exec("qts")
-        pkgs = []
-        if os.path.exists("package.json"):
-            with open("package.json", "r") as f:
-                package = json.load(f)
-            if "dependencies" in package:
-                for i in package["dependencies"]:
-                    pkgs.append(i)
-        saferun("qts " + file + " -o " + refileformat(outfile, fileformat(file), "lua") + " -I " + " -I ".join(pkgs))
+
         return "ts"
     def compile_kt(file, outfile):
         check_exec("rbxkt")
@@ -214,7 +209,8 @@ def get(lib):
         shutil.copyfile(file, outfile)
         return "lua"
     
-def compile(indir, outdir):
+def compile(indir, outdir, predir):
+    tsOn = False
     startTime = time.time()
     # check if indir exists
     if not os.path.exists(indir):
@@ -237,6 +233,10 @@ def compile(indir, outdir):
         for file in files:
             ext = file.split(".")[-1]
             log.info("Compiling " + file + "...")
+            if ext in ts:
+                if not os.path.exists(indir + "/../tsconfig.json"):
+                    log.error("tsconfig.json not found")
+                tsOn = True
             if ext not in summerize:
                 if not hasattr(texteng.TextEng, ext):
                     log.error("file extension '" + ext + "' not supported")
@@ -270,6 +270,40 @@ def compile(indir, outdir):
     # remove duplicates from languages
     languages = list(set(languages))
     
+    # typescript
+    if tsOn:
+        #if os.path.exists(outdir + "/../"+predir):
+        #    log.error("TS branch already exists, please delete '"+predir+"' before compiling to TS")
+        #def defer():
+        #    # delete outdir+/../+predir
+        #   shutil.rmtree(outdir + "/../"+predir)
+
+        log.info("Compiling to TS...")
+
+        #shutil.copytree(outdir + "/../", predir)
+
+        check_exec("rbxtsc")
+        saferun("rbxtsc")
+        #saferun("rbxtsc -p " + outdir + "/../"+predir, defer)
+        #try:
+        #    predir_ext = outdir + "/../"+predir
+        #    # go through files in predir/+indir
+        #    tsFiles = []
+        #    for root, dirs, files in os.walk(predir_ext + "/" + indir):
+        #        for file in files:
+        #            ext = file.split(".")[-1]
+        #            if ext in ts:
+        #                # add full path relative to predir_ext+indir
+        #                tsFiles.append(root + "/" + file.replace(predir_ext, ""))
+        #    # grab all ts files, move them to outdir out of predir
+        #    for file in tsFiles:
+        #        print(file)
+        #        shutil.move(file, outdir + "/" + file)
+        #except Exception as e:
+        #    defer()
+        #    log.error("failed to merge TS branch: " + str(e))
+        
+        #defer()
     # add runtime libraries
     log.info("Adding runtime libraries...")
     if not os.path.exists(outdir + "/../include"):

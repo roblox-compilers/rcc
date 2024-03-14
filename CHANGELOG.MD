@@ -20,3 +20,9 @@
 - `Teal` support
 - Support roblox-py Jupyter Notebooks
 - Report time that compilation took
+# RCC 1.3.2
+- Cut need for using `qts`, use `rbxts` instead
+- `rcc-config.json` files
+- Support multiple typescript files
+- Built in binding generator
+- `rcc build` has a custom arguments.
