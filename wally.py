@@ -1,4 +1,3 @@
-from curses import meta
 import log, requests, json, os, zipfile
 # Download from wally 
 info = log.info
