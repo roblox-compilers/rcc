@@ -13,8 +13,8 @@ try:
     # run pyinstaller --version if that fails then error
     result = subprocess.run(["pyinstaller", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if result.returncode != 0:
-        raise ImportError
-except ImportError:
+        raise
+except:
     log.info("installing pyinstaller...")
     try:
         subprocess.call((f"{sys.executable} -m pip install pyinstaller"), shell=True, stdout=subprocess.DEVNULL, stderr=sys.stderr)
