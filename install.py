@@ -1,7 +1,7 @@
 """
 Handles all the packages
 """
-import os, sys
+import os, sys, stat
 import log
 import importlib.util
 try:
@@ -14,9 +14,9 @@ try:
 except ImportError:
     log.info("installing cx_Freeze...")
     try:
-        subprocess.call(("pip install cx_Freeze"), shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.call((f"{sys.executable} -m pip install cx_Freeze"), shell=True, stdout=subprocess.DEVNULL, stderr=sys.stderr)
     except:
-        log.error("pyinstaller is not installed, please install it using 'pip install cx_Freeze' for local builds")
+        log.error("Failed to install cx_Freeze automatically. See above for error.")
 from cx_Freeze import setup, Executable
 
 def compile_project(project_script, project_name):
@@ -228,8 +228,9 @@ def installloc(pkg):
                 for i in os.listdir():
                     for j in os.listdir(i):
                         # If the file has no extension or .exe then bin it and break
-                        if "." not in j or j.split(".")[len(j.split(".")) - 1] == "exe":
+                        if ("." not in j and not os.path.isdir(i+"/"+j)) or j.split(".")[len(j.split(".")) - 1] == "exe":
                             j = i + "/" + j
+                            
                             bin(j, i + "/lib")
 
                             found = True
@@ -238,7 +239,22 @@ def installloc(pkg):
                         break
                 os.chdir("..")
                 os.chdir("..")
-                shutil.rmtree(relative[pkg])
+                def remove_readonly(func, path, exc_info, max_attempts=3):
+                    if isinstance(exc_info[1], PermissionError):
+                        if remove_readonly.attempts >= max_attempts:
+                            raise exc_info[1]  # Rethrow the original exception
+                        try:
+                            os.chmod(path, stat.S_IWRITE) # Attempt to remove read-only
+                        except:
+                            raise exc_info[1] # Not caused by read-only
+                        remove_readonly.attempts += 1
+                        func(path)
+                        remove_readonly.attempts = 0  # Reset the counter if successful
+                    else:
+                        raise exc_info[1]
+                
+                remove_readonly.attempts = 0  
+                shutil.rmtree(relative[pkg],onerror=remove_readonly)
             except KeyboardInterrupt:
                 log.error(f"installation failed: user cancelled. {exec[relative[pkg]]['repo']} may no longer be installed or may be corrupted")
 def install(pkg):

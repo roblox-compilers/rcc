@@ -1,1 +1,5 @@
-inquirer: 1.0.2
+inquirer>=1.0.2
+xmltodict
+requests
+cx_Freeze
+windows-curses; sys_platform=='win32'
