@@ -220,8 +220,9 @@ def installloc(pkg):
                 for i in os.listdir():
                     for j in os.listdir(i):
                         # If the file has no extension or .exe then bin it and break
-                        if "." not in j or j.split(".")[len(j.split(".")) - 1] == "exe":
+                        if ("." not in j and not os.path.isdir(i+"/"+j)) or j.split(".")[len(j.split(".")) - 1] == "exe":
                             j = i + "/" + j
+                            
                             bin(j, i + "/lib")
 
                             found = True
