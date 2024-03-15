@@ -13,7 +13,7 @@ except ImportError:
     log.error("inquirer not installed, run 'pip install inquirer'")
 
 
-VERSION = "1.1.1"
+VERSION = "1.4.3"
 
 def help():
     print("usage: \033[31;1mrcc\033[0m [command] [options]")
