@@ -14,9 +14,9 @@ try:
 except ImportError:
     log.info("installing cx_Freeze...")
     try:
-        subprocess.call(("pip install cx_Freeze"), shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.call((f"{sys.executable} -m pip install cx_Freeze"), shell=True, stdout=subprocess.DEVNULL, stderr=sys.stderr)
     except:
-        log.error("cx_Freeze is not installed, please install it using 'pip install cx_Freeze' for local builds")
+        log.error("Failed to install cx_Freeze automatically. See above for error.")
 from cx_Freeze import setup, Executable
 
 def compile_project(project_script, project_name):
