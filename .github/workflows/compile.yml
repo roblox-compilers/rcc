@@ -31,18 +31,9 @@ jobs:
         mkdir ${{ github.workspace }}/build
         echo ${{ github.workspace }}/build | python rcc.py install rcc
 
-    - name: Zip files (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        Compress-Archive -DestinationPath rcc-win.zip -Path ${{ github.workspace }}/build/*
-
-    - name: Tar files (Linux)
-      if: runner.os == 'Linux'
-      run: |
-        tar -czvf rcc-linux.tar.gz -C ${{ github.workspace }}/build .
 
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ runner.os == 'Windows' && 'rcc-win.zip' || 'rcc-linux.tar.gz' }}
-        path: ${{ runner.os == 'Windows' && 'rcc-win.zip' || 'rcc-linux.tar.gz' }}
+        name: ${{ runner.os == 'Windows' && 'rcc-win' || 'rcc-linux' }}
+        path: '${{ github.workspace }}/build/'
