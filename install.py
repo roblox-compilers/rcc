@@ -51,9 +51,17 @@ def installincludes():
     else:
         with open("/usr/local/include/rbx.h", "w") as f:
             f.write(contents)
+def get_input_with_default(prompt, default_value):
+    response = input(prompt + f" (default: {default_value})")
+    if response == '':
+        return default_value
+    else:
+        return response
+
 def installpyincludes():
     log.info("installing roblox-py includes...")
-    dir = input("Please enter the path to your Python include folder: ")
+    from distutils.sysconfig import get_python_lib; guessedPath = (get_python_lib())
+    dir = get_input_with_default("Please enter the path to your Python include folder: ", guessedPath)
     
     path = dir + "/rbx.py"
     log.info("loading binding engine...")
