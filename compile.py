@@ -20,6 +20,7 @@ def check_exec(name, check = "-v"):
 summerize = {
     # Python
     "py": "compile_py",
+    "by": "compile_by",
     "ipynb": "compile_jupyter",
     
     # C & C++
@@ -91,6 +92,10 @@ class Compilers:
         check_exec("rbxpy")
         saferun("rbxpy " + file + " -r -j -o " + refileformat(outfile, fileformat(file), "lua"))
         return "py"
+    def compile_by(file, outfile):
+        check_exec("rbxpy")
+        saferun("rbxpy " + file + " -r -b -o " + refileformat(outfile, fileformat(file), "lua"))
+        return "by"
     def passthrough(file, outfile):
         shutil.copyfile(file, outfile)
         return "lua"
