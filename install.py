@@ -83,28 +83,6 @@ exec = {
         "mainfile": "src/rbxpy.py",
         "special": installpyincludes
     },
-    "teal": {
-        "repo": "",
-        "darwin": "tl",
-        "win32": "tl.exe",
-        "mainfile": None,
-        "specialin": tl,
-        "special": None
-    },
-    "moonscript": {
-        "repo": "roblox-compilers/luau-ms",
-        "darwin": "moonc",
-        "win32": "moonc.exe",
-        "mainfile": None,
-        "special": None
-    },
-    "yuescript": {
-        "repo": "roblox-compilers/luau-ys",
-        "darwin": "yuec",
-        "win32": "yuec.exe",
-        "mainfile": None,
-        "special": None
-    },
     "roblox-c": {
         "repo": "roblox-compilers/roblox-c",
         "darwin": "rbxc",

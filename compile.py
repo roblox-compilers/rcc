@@ -43,18 +43,9 @@ summerize = {
     "S": "compile_asm",
     "rasm": "compile_asm",
     
-    # Lua (passthrough)
+    # Lua (passthrough/check)
     "lua": "passthrough",
-    "luau": "passthrough",
-    
-    # Teal
-    "tl": "compile_teal",
-    
-    # MoonScript
-    "moon": "compile_moon",
-    
-    # YueScript
-    "yue": "compile_yue",
+    "luau": "passthrough_check",
 }
 
 ts = ["ts", "tsx"]
@@ -68,6 +59,10 @@ def saferun(cmd, fallback = None):
         if fallback:
             fallback()
         log.error("operation failed")
+def analyze(file):
+    succ = subprocess.run("luau-analyze "+file, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if succ.returncode != 0:
+        log.error("luau stopped compilation")
 class Compilers:
     def compile_py(file, outfile):
         check_exec("rbxpy")
@@ -92,120 +87,16 @@ class Compilers:
         check_exec("rasm")
         saferun("rasm " + file + " > " + refileformat(outfile, fileformat(file), "lua"))
         return "asm"
-    def compile_teal(file, outfile):
-        tl_link = "https://raw.githubusercontent.com/teal-language/tl/master/tl.lua"
-        lib = requests.get(tl_link).text
-        lib = "\n".join(lib.split("\n")[:-2])
-        lib += "\nRCCTEAL = tl\n"
-        lib += """RCCTEAL.pyprocess = function(file)
-    res, err = tl.process(file)
-    return {
-        result = res,
-        error = err
-    }
-end
-
-RCCTEAL.write_out = function(tlconfig, result, output_file) -- from Teal CLI
-   local ofd, err = io.open(output_file, 'wb')
-
-   if not ofd then
-      return {
-        error = err
-      }
-   end
-
-   local _
-   _, err = ofd:write(tl.pretty_print_ast(result.ast, tlconfig.gen_target) .. "\\n")
-   if err then
-      return {
-          error = err
-      }
-   end
-
-   ofd:close()
-   
-   return {}
-end
-
-RCCTEAL.report = function(category, errors)
-    if not errors then
-        return false
-    end
-    if #errors > 0 then
-        local n = #errors
-        for _, err in ipairs(errors) do
-        print("\\27[1;31m"..category.." \\27[0m\\27[90mTEAL rcc-teal:\\27[0m " .. err.filename .. ":\\27[1m" .. err.y .. ":" .. err.x .. ": " .. (err.msg or "") .. "\\27[0m")
-        end
-        return true
-    end
-    return false
-end
-RCCTEAL.reportwarn = function(category, errors)
-    if not errors then
-        return false
-    end
-    if #errors > 0 then
-        local n = #errors
-        for _, err in ipairs(errors) do
-            print("\\27[1;33mwarning \\27[0m\\27[90mTEAL rcc-teal:\\27[0m " .. err.filename .. ":\\27[1m" .. err.y .. ":" .. err.x .. ": " .. (err.msg or "") .. "\\27[0m")
-        end
-        return true
-    end
-    return false
-end
-"""
-        embed = """import sys
-try:
-    import lupa
-except:
-    print("RCC rcc-internal: lupa not installed, please install it using 'pip install lupa'")
-    sys.exit(1)
-lua = lupa.LuaRuntime()
-def get(lib):
-    lua.execute(lib)
-    tl = lua.globals().RCCTEAL
-    return tl"""
-        embeded_globals = {}
-        exec(embed, embeded_globals)
-        tl = embeded_globals["get"](lib)
-        compiled = tl.pyprocess(file)
-        if compiled.error:
-            log.error(compiled.error)
-        if len(compiled.result.syntax_errors) == 0:
-            if len(compiled.result.warnings) > 0:
-                tl.reportwarn("warning", compiled.result.warnings)
-            if len(compiled.result.type_errors) > 0:
-                tl.report("type error", compiled.result.type_errors)
-                sys.exit(1)
-            ret = tl.write_out({
-                "gen_target": "lua51"
-                }, compiled.result, refileformat(outfile, fileformat(file), "lua"))
-            if ret.error:
-                log.error(ret.error)
-        else:
-            print("\n")
-            tl.report("syntax error", compiled.result.syntax_errors)
-            sys.exit(1)
-            
-        return "tl"
-    def compile_yue(file, outfile):
-        log.error("YueScript is not supported yet")
-        #check_exec("tl")
-        #saferun("tl check " + file)
-        #saferun("tl gen " + file)
-        return "yue"
     def compile_jupyter(file, outfile):
         check_exec("rbxpy")
         saferun("rbxpy " + file + " -r -j -o " + refileformat(outfile, fileformat(file), "lua"))
         return "py"
-    
-    def compile_moon(file, outfile):
-        log.error("MoonScript is not supported yet")
-        #check_exec("tl")
-        #saferun("tl check " + file)
-        #saferun("tl gen " + file)
-        return "moon"
     def passthrough(file, outfile):
+        shutil.copyfile(file, outfile)
+        return "lua"
+    def passthrough_check(file, outfile):
+        check_exec("luau-analyze", "")
+        analyze(file)
         shutil.copyfile(file, outfile)
         return "lua"
     
@@ -232,7 +123,6 @@ def compile(indir, outdir, predir):
     for root, dirs, files in os.walk(indir):
         for file in files:
             ext = file.split(".")[-1]
-            log.info("Compiling " + file + "...")
             if ext in ts:
                 if not os.path.exists(indir + "/../tsconfig.json"):
                     log.error("tsconfig.json not found")
@@ -282,7 +172,7 @@ def compile(indir, outdir, predir):
         #    # delete outdir+/../+predir
         #   shutil.rmtree(outdir + "/../"+predir)
 
-        log.info("Compiling to TS...")
+        #log.info("Compiling to TS...")
 
         #shutil.copytree(outdir + "/../", predir)
 
@@ -309,7 +199,7 @@ def compile(indir, outdir, predir):
         
         #defer()
     # add runtime libraries
-    log.info("Adding runtime libraries...")
+    #log.info("Adding runtime libraries...")
     if not os.path.exists(outdir + "/../include"):
         os.mkdir(outdir + "/../include")
     runtime.RuntimeEngine.load(languages, outdir + "/../include")

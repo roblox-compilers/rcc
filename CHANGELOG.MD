@@ -25,3 +25,7 @@
 - `rcc-config.json` files
 - Support multiple typescript files
 - `rcc build` has a custom arguments.
+# RCC 1.3.3
+- Cut Teal, YueScript, and MoonScript support
+- All `.luau` files will have `luau-analyze` ran on them.
+- Remove `Compiled _` info spam when compiling
