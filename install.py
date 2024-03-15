@@ -9,6 +9,26 @@ try:
 except:
     log.error("requests not installed, please install it using 'pip install requests'")
 import subprocess, compile, shutil
+try:
+    import cx_Freeze
+except ImportError:
+    log.info("installing cx_Freeze...")
+    try:
+        subprocess.call(("pip install cx_Freeze"), shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except:
+        log.error("pyinstaller is not installed, please install it using 'pip install cx_Freeze' for local builds")
+from cx_Freeze import setup, Executable
+
+def compile_project(project_script, project_name):
+    sys.argv = ['setup.py', 'build']  # Mimic command line arguments
+
+    setup(
+        name = project_name,
+        version = "0.1",
+        description = f"{project_name} Description",
+        executables = [Executable(project_script)]
+    )
+
 
 def qts():
     if input("\033[1;33mreccomendation \033[0m\033[90mCORE rcc:\033[0m would you like to install qts alongside rbxts? (y/n)  ").lower() == "y":
@@ -16,19 +36,7 @@ def qts():
     else:
         return True
 def silent(code):
-    subprocess.call(code, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    
-def isbuildcapable():
-    try:
-        silent("pyinstaller -v")
-    except:
-        log.info("installing pyinstaller...")
-        try:
-            silent("pip install pyinstaller")
-        except:
-            log.error("pyinstaller is not installed, please install it using 'pip install pyinstaller' for local builds")
-            return False
-    return True            
+    subprocess.call(code, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)    
 def installrbxts():
     print("\033[1;33minfo \033[0m\033[90mCORE rcc:\033[0m rbxts requires npm to be installed")
     os.system("npm install -g typescript")
@@ -205,10 +213,21 @@ def installloc(pkg):
                 silent(f"git clone {path}")
                 os.chdir(relative[pkg])
                 log.info(f"building {pkg}...")
-                os.system(f"pyinstaller {exec[relative[pkg]]['mainfile']} --onefile")
-                os.chdir("dist")
+                #os.system(f"pyinstaller {exec[relative[pkg]]['mainfile']} --onefile")
+                compile_project(exec[relative[pkg]]['mainfile'], relative[pkg])
+                os.chdir("build")
+                found = False
                 for i in os.listdir():
-                    bin(i)
+                    for j in os.listdir(i):
+                        # If the file has no extension or .exe then bin it and break
+                        if "." not in j or j.split(".")[len(j.split(".")) - 1] == "exe":
+                            j = i + "/" + j
+                            bin(j, i + "/lib")
+
+                            found = True
+                            break
+                    if found:
+                        break
                 os.chdir("..")
                 os.chdir("..")
                 def remove_readonly(func, path, exc, max_attempts=3):
@@ -230,23 +249,22 @@ def installloc(pkg):
             except KeyboardInterrupt:
                 log.error(f"installation failed: user cancelled. {exec[relative[pkg]]['repo']} may no longer be installed or may be corrupted")
 def install(pkg):
-    if isbuildcapable():
-        installloc(pkg)
-    else:
-        installpre(pkg)
-def bin(file):
+    installloc(pkg)
+def bin(file, lib=None):
     # Move the file to /usr/bin in macOS and Linux, and to C:\win32dows\System32 in windows
     if sys.platform != "win32":
         os.system(f"chmod +x {file}")
         log.info("secured " + file + "...")
 
     name = file.split(".")[len(file.split(".")) - 2]
-
+    path = input("Please enter the path to your bin folder: ")
     try:
-        shutil.move(file, input("Please enter the path to your bin folder: "))
+        shutil.move(file, path)
+        if lib:
+            shutil.move(lib, path)
     except Exception as e:
         log.error(f"failed to move {file}: {e}")
-    log.info("successfully generated " + "~/" + name)
+    log.info("successfully generated " + "bin/" + name)
         
 def delete(file):
     log.info(f"uninstalling {file}...")
