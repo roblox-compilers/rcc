@@ -10,9 +10,10 @@ except:
     log.error("requests not installed, please install it using 'pip install requests'")
 import subprocess, compile, shutil
 try:
-    data = subprocess.run("pyinstaller --version", shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    if data.returncode != 0:
-        ImportError()
+    # run pyinstaller --version if that fails then error
+    result = subprocess.run(["pyinstaller", "--version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if result.returncode != 0:
+        raise ImportError
 except ImportError:
     log.info("installing pyinstaller...")
     try:
