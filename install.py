@@ -32,7 +32,7 @@ def silent(code):
 def installrbxts():
     print("\033[1;33minfo \033[0m\033[90mCORE rcc:\033[0m rbxts requires npm to be installed")
     os.system("npm install -g typescript")
-    os.system("npm install -g @rbxts/rbxts-cli")
+    os.system("npm install -g roblox-ts")
     
 def installincludes():
     log.info("installing roblox-c includes...")
@@ -113,6 +113,7 @@ exec = {
         "darwin": "rbxtsc",
         "win32": "rbxtsc.exe",
         "mainfile": None,
+        "special": None,
         "specialin": installrbxts
     },
     "roblox-kt": {
