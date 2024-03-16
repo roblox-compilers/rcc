@@ -106,14 +106,13 @@ exec = {
         "darwin": "rbxcs",
         "win32": "rbxcs.exe",
         "mainfile": None,
-        "special": notact
+        "special": None
     },
     "roblox-ts": {
         "repo": "roblox-compilers/roblox-ts",
         "darwin": "rbxtsc",
         "win32": "rbxtsc.exe",
         "mainfile": None,
-        "special": qts,
         "specialin": installrbxts
     },
     "roblox-kt": {
