@@ -1,4 +1,4 @@
-name: Compile
+name: Windows & Ubuntu (Latest Build)
 
 on:
   push:
