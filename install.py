@@ -51,31 +51,34 @@ def get_input_with_default(prompt, default_value):
         return response
 
 def installpyincludes():
-    log.info("installing roblox-py includes...")
-    from distutils.sysconfig import get_python_lib; guessedPath = (get_python_lib())
-    dir = get_input_with_default("Please enter the path to your Python include folder: ", guessedPath)
-    
-    path = dir + "/rbx.py"
-    log.info("loading binding engine...")
-    contents = requests.get("https://raw.githubusercontent.com/roblox-compilers/bindings/main/fetch.py").text
-    with open("roblox_bindings.py", "w") as f:
-        f.write(contents)
-    log.info("preparing binding engine...")
-    spec = importlib.util.spec_from_file_location('roblox_bindings', 'roblox_bindings.py')
-    fetch = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(fetch)
-    log.info("generating bindings...")
-    newCreator = fetch.Python()
-    rendered = fetch.render(newCreator)
-    log.info(f"installing bindings to {path}...")
-    with open(path, "w") as f:
-        f.write(rendered)
-    log.info("installed bindings")
-    # delete fetch
-    os.remove("roblox_bindings.py")
-    del rendered 
-    del fetch
-    del newCreator
+    try:
+        log.info("installing roblox-py includes...")
+        from distutils.sysconfig import get_python_lib; guessedPath = (get_python_lib())
+        dir = get_input_with_default("Please enter the path to your Python include folder: ", guessedPath)
+        
+        path = dir + "/rbx.py"
+        log.info("loading binding engine...")
+        contents = requests.get("https://raw.githubusercontent.com/roblox-compilers/bindings/main/fetch.py").text
+        with open("roblox_bindings.py", "w") as f:
+            f.write(contents)
+        log.info("preparing binding engine...")
+        spec = importlib.util.spec_from_file_location('roblox_bindings', 'roblox_bindings.py')
+        fetch = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(fetch)
+        log.info("generating bindings...")
+        newCreator = fetch.Python()
+        rendered = fetch.render(newCreator)
+        log.info(f"installing bindings to {path}...")
+        with open(path, "w") as f:
+            f.write(rendered)
+        log.info("installed bindings")
+        # delete fetch
+        os.remove("roblox_bindings.py")
+        del rendered 
+        del fetch
+        del newCreator
+    except Exception as e:
+        log.warn(f"binding installation failed: {e}")
     
 def tl():
     log.error("Teal does not need to be installed since it is prebuilt into RCC.")
