@@ -78,7 +78,7 @@ def installpyincludes():
         del fetch
         del newCreator
     except Exception as e:
-        log.warn(f"binding installation failed: {e}")
+        log.info(f"binding installation failed: {e}")
     
 def tl():
     log.error("Teal does not need to be installed since it is prebuilt into RCC.")
