@@ -57,7 +57,7 @@ def main():#try:
         compile.compile("src", "out", "pre")
     elif args[0] == "install":
         try: 
-            install.install(args[1], args)
+            install.install(args[1])
         except Exception as e:
             log.error(f"install failed: {e}")
             sys.exit(1)
