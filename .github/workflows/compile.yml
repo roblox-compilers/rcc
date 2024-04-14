@@ -11,7 +11,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-latest, macos-latest]
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -35,5 +35,22 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ runner.os == 'Windows' && 'rcc-win' || 'rcc-linux' }}
+        name: ${{ runner.os == 'Windows' && 'rcc-win' || runner.os == 'Ubuntu' && 'rcc-ubuntu' || 'rcc-macos' }}
         path: '${{ github.workspace }}/build/'
+
+    - name: Get latest release
+      id: latest_release
+      uses: abatilo/release-info-action@v1.3.0
+      with:
+        owner: ${{ github.repository_owner }}
+        repo: ${{ github.event.repository.name }}
+
+    - name: Upload release asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.latest_release.outputs.upload_url }} # This pulls from the GET RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://www.edwardthomson.com/blog/github_actions_6_environment_variables_secrets_and_contexts.html
+        asset_path: '${{ github.workspace }}/build/'
+        asset_name: ${{ runner.os == 'Windows' && 'rcc-win' || runner.os == 'Ubuntu' && 'rcc-ubuntu' || 'rcc-macos' }}'
+        asset_content_type: application/octet-stream
