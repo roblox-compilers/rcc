@@ -1,4 +1,4 @@
-name: Windows & Ubuntu (Latest Build)
+name: Windows, macOS, and Ubuntu (Latest Build)
 
 on:
   push:
