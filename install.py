@@ -92,7 +92,7 @@ exec = {
         "darwin": "rbxpy",
         "win32": "rbxpy.exe",
         "mainfile": "src/rbxpy.py",
-        "special": installpyincludes
+        "special": None#installpyincludes
     },
     "roblox-c": {
         "repo": "roblox-compilers/roblox-c",
