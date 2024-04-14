@@ -38,23 +38,23 @@ jobs:
         name: ${{ runner.os == 'Windows' && 'rcc-win' || runner.os == 'Ubuntu' && 'rcc-ubuntu' || 'rcc-macos' }}
         path: '${{ github.workspace }}/build/'
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-        draft: false
-        prerelease: false
+    #- name: Create Release
+    #  id: create_release
+    #  uses: actions/create-release@v1
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #  with:
+    #    tag_name: ${{ github.ref }}
+    #    release_name: Release ${{ github.ref }}
+    #    draft: false
+    #    prerelease: false
 
-    - name: Upload release asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.latest_release.outputs.upload_url }}
-        asset_path: '${{ github.workspace }}/build/'
-        asset_name: ${{ runner.os == 'Windows' && 'rcc-win' || runner.os == 'Ubuntu' && 'rcc-ubuntu' || 'rcc-macos' }}'
-        asset_content_type: application/octet-stream
+    #- name: Upload release asset
+    #  uses: actions/upload-release-asset@v1
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #  with:
+    #    upload_url: ${{ steps.latest_release.outputs.upload_url }}
+    #    asset_path: '${{ github.workspace }}/build/'
+    #    asset_name: ${{ runner.os == 'Windows' && 'rcc-win' || runner.os == 'Ubuntu' && 'rcc-ubuntu' || 'rcc-macos' }}'
+    #    asset_content_type: application/octet-stream
