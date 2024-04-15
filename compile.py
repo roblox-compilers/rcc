@@ -36,17 +36,15 @@ summerize = {
     "ts": "compile_ts",
     "tsx": "compile_ts",
     
-    # Kotlin
-    "kt": "compile_kt",
-    
     # Assembly
-    "asm": "compile_asm",
-    "S": "compile_asm",
-    "rasm": "compile_asm",
+    "ll": "compile_llvm",
     
     # Lua (passthrough/check)
     "lua": "passthrough",
     "luau": "passthrough_check",
+
+    # Other
+    "zap": "compile_zap",
 }
 
 ts = ["ts", "tsx"]
@@ -80,14 +78,10 @@ class Compilers:
     def compile_ts(file, outfile):
 
         return "ts"
-    def compile_kt(file, outfile):
-        check_exec("rbxkt")
-        saferun("rbxkt " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
-        return "kt"
-    def compile_asm(file, outfile):
-        check_exec("rasm")
-        saferun("rasm " + file + " > " + refileformat(outfile, fileformat(file), "lua"))
-        return "asm"
+    def compile_llvm(file, outfile):
+        check_exec("rbxllc")
+        saferun("rbxllc " + file + " -o " + refileformat(outfile, fileformat(file), "lua"))
+        return "rbxllc"
     def compile_jupyter(file, outfile):
         check_exec("rbxpy")
         saferun("rbxpy " + file + " -r -j -o " + refileformat(outfile, fileformat(file), "lua"))
@@ -96,6 +90,8 @@ class Compilers:
         check_exec("rbxpy")
         saferun("rbxpy " + file + " -r -b -o " + refileformat(outfile, fileformat(file), "lua"))
         return "by"
+    def compile_zap(file, outfile):
+        log.error("Unsupported file type currently: zap")
     def passthrough(file, outfile):
         shutil.copyfile(file, outfile)
         return "lua"
