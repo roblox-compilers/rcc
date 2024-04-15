@@ -1,6 +1,10 @@
 # rcc
 [![Windows & Ubuntu (Latest Build)](https://github.com/roblox-compilers/rcc/actions/workflows/compile.yml/badge.svg)](https://github.com/roblox-compilers/rcc/actions/workflows/compile.yml)<br/>
 Interface to install, update and configurate *roblox-py*. *qts*, *roblox-ts*, *roblox-c*, *roblox-cs*, and *roblox-kt* that allows you to use all the compilers at once with Rojo.
+
+> [!WARNING]
+> RCC V2 is actively being worked on, and will be switched to V2 when it is time. 
+
 ***
 ## Usage
 ### `install`
@@ -8,9 +12,6 @@ Allows you to install a compiler like:
 `rcc install rbxpy`
 ### `init`
 Loads the interactive template creator
-### `uninstall`
-Allows you to uninstall a compiler like:
-`rcc uninstall rbxpy`
 ### `uninstall`
 Allows you to uninstall a compiler like:
 `rcc uninstall rbxpy`
